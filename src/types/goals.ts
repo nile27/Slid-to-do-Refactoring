@@ -23,3 +23,10 @@ export interface GoalsListResponse {
     totalCount: number
     nextCursor: number
 }
+
+// 무한스크롤 리스트
+export interface GoalsAllListResponse {
+    data: GoalResponse[]
+    totalCount: number
+    nextCursor: number
+}

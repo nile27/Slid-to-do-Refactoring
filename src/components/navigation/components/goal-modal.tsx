@@ -78,7 +78,7 @@ const GoalModal = () => {
                     placeholder="새 목표를 작성해주세요."
                     className="w-full outline"
                     onChange={(changeEvent) => inputOnChange(changeEvent)}
-                    maxLength={100}
+                    maxLength={35}
                 />
                 <span className=" w-full px-2 text-subBody-sm font-medium text-red-500">{inputError}</span>
             </main>

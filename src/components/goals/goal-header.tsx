@@ -70,6 +70,31 @@ export default function GoalHeader({
         }
     }, [goalEdit])
 
+    const triggerReference = useRef<HTMLDivElement>(null)
+    const menuReference = useRef<HTMLDivElement>(null)
+
+    // 외부 클릭 닫기
+    useEffect(() => {
+        const handleClickOutside = (event_: MouseEvent) => {
+            const t = event_.target as Node
+            if (menuReference.current?.contains(t)) return
+            if (triggerReference.current?.contains(t)) return
+            setMoreButton(false)
+        }
+        const onEsc = (event_: KeyboardEvent) => {
+            if (event_.key === 'Escape') setMoreButton(false)
+        }
+
+        if (moreButton) {
+            document.addEventListener('mousedown', handleClickOutside)
+            document.addEventListener('keydown', onEsc)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('keydown', onEsc)
+        }
+    }, [moreButton, setMoreButton])
+
     if (isLoading) return <LoadingSpinner />
     return (
         <div className="mt-4 py-4 px-6 bg-white rounded">
@@ -86,7 +111,7 @@ export default function GoalHeader({
                                     name="title"
                                     className="max-w-full"
                                     onChange={handleInputUpdate}
-                                    maxLength={100}
+                                    maxLength={35}
                                     ref={inputReference}
                                 />
                                 <ButtonStyle
@@ -116,10 +141,14 @@ export default function GoalHeader({
                         className="flex-shrink-0 cursor-pointer relative"
                         onClick={() => setMoreButton(!moreButton)}
                         role="moreButton"
+                        ref={triggerReference}
                     >
                         <Image src="/goals/ic-more.svg" alt="더보기버튼" width={24} height={24} />
                         {moreButton && (
-                            <div className="w-24 py-2 absolute right-0 top-7 flex gap-2 flex-col rounded text-center shadow-md z-10 bg-white">
+                            <div
+                                className="w-24 py-2 absolute right-0 top-7 flex gap-2 flex-col rounded text-center shadow-md z-10 bg-white"
+                                ref={menuReference}
+                            >
                                 <button type="button" onClick={() => setGoalEdit(true)}>
                                     수정하기
                                 </button>
