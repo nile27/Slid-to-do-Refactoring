@@ -1,5 +1,5 @@
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-import {render, screen} from '@testing-library/react'
+import {act, render, screen} from '@testing-library/react'
 
 import DashBoardPage from '@/app/dashboard/page'
 
@@ -14,29 +14,31 @@ const mockTodos = [
     {id: 2, title: '테스트 할일 2', done: false},
 ]
 
-describe('Dashboard 컴포넌트', () => {
-    it('Dashboard rendering', () => {
-        const queryClient = new QueryClient()
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <DashBoardPage />
-            </QueryClientProvider>,
-        )
-
-        expect(screen.getByText('대시보드')).toBeInTheDocument()
-    })
-})
-
+const mockGoals = [
+    {id: 1, title: '테스트 목표 1', description: '테스트 설명 1'},
+    {id: 2, title: '테스트 목표 2', description: '테스트 설명 2'},
+]
 jest.mock('@/lib/common-api', () => ({
-    get: jest.fn(() =>
-        Promise.resolve({
+    get: jest.fn().mockImplementation((url, config) => {
+        if (url.includes('goals')) {
+            return Promise.resolve({
+                data: {
+                    goals: mockGoals,
+                    nextCursor: 123,
+                    totalCount: 2,
+                },
+            })
+        }
+
+        return Promise.resolve({
             data: {
+                goals: mockGoals,
                 todos: mockTodos,
                 nextCursor: 123,
+                totalCount: 2,
             },
-        }),
-    ),
+        })
+    }),
 }))
 
 jest.mock('next/navigation', () => ({
@@ -50,3 +52,25 @@ jest.mock('next/navigation', () => ({
     usePathname: () => '/dashboard',
     useSearchParams: () => new URLSearchParams(),
 }))
+
+describe('Dashboard 컴포넌트', () => {
+    it('Dashboard rendering', async () => {
+        const queryClient = new QueryClient({
+            defaultOptions: {
+                queries: {
+                    retry: false,
+                },
+            },
+        })
+
+        await act(async () => {
+            render(
+                <QueryClientProvider client={queryClient}>
+                    <DashBoardPage />
+                </QueryClientProvider>,
+            )
+        })
+
+        expect(screen.getByText('대시보드')).toBeInTheDocument()
+    })
+})
