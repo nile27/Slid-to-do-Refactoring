@@ -19,7 +19,7 @@ const mockGoals = [
     {id: 2, title: '테스트 목표 2', description: '테스트 설명 2'},
 ]
 jest.mock('@/lib/common-api', () => ({
-    get: jest.fn().mockImplementation((url, config) => {
+    get: jest.fn().mockImplementation((url) => {
         if (url.includes('goals')) {
             return Promise.resolve({
                 data: {
