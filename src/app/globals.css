@@ -46,12 +46,20 @@ body {
     font-family: var(--font-pretendard), Arial, Helvetica, sans-serif;
 }
 
+
+
 .ProseMirror p.is-editor-empty:first-child::before {
-    content: attr(data-placeholder);
+    content: a-ttr(data-placeholder);
     float: left;
     color: #6b7280;
     pointer-events: none;
     height: 0;
+}
+
+.ProseMirror p:last-child:empty::before {
+    content: '';
+    display: block;
+    height: 18px; /* 클릭/캐럿 들어갈 공간 */
 }
 
 button {

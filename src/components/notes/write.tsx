@@ -9,7 +9,7 @@ import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.css'
 
 import TwoButtonModal from '@/components/common/modal/two-buttom-modal'
-import MarkdownEditor from '@/components/markdown-editor/markdown-editor'
+import MarkdownEditor from '@/components/editor/markdown-editor'
 import ButtonStyle from '@/components/style/button-style'
 import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import useModal from '@/hooks/use-modal'

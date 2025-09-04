@@ -6,6 +6,7 @@ import React, {useEffect, useRef, useState} from 'react'
 
 import {useQueryClient} from '@tanstack/react-query'
 
+import MarkdownEditor from '@/components/editor/markdown-editor'
 import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import {useCustomQuery} from '@/hooks/use-custom-query'
 import {useIsNoteChanged} from '@/hooks/use-is-note-changed'
@@ -14,7 +15,6 @@ import {notes} from '@/lib/query-keys'
 import {type NoteItemResponse} from '@/types/notes'
 
 import LoadingSpinner from '../common/loading-spinner'
-import MarkdownEditor from '../markdown-editor/markdown-editor'
 import ButtonStyle from '../style/button-style'
 
 import type {ApiError} from '@/types/api'
@@ -174,7 +174,7 @@ const NoteEditCompo = ({noteId}: {noteId: string}) => {
                     </div>
                 </div>
             ) : (
-                <div className="absolute top-1/2 -translate-y-1/2">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <LoadingSpinner />
                 </div>
             )}

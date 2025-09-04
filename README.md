@@ -3,12 +3,17 @@
 
 `Slid to-do`는 다양한 학습 및 작업 콘텐츠(아티클, 강의 영상, Zoom 미팅 일정, 강의 자료 등)를 할 일 목록으로 정리하고, 각 콘텐츠에 대한 노트를 작성하며 체계적으로 학습과 프로젝트를 관리할 수 있는 서비스입니다.
 
-- 📅 프로젝트 기간: 2025.07.03 ~ 2025.08.12 (총 6주)
-- 😄 팀원: 5명
-
-| 배포 사이트 |                                    💻 [배포 링크](https://slid-to-do-fe.vercel.app/)                                     |
+| 배포 사이트 |                                    💻 [배포 링크](https://slid-to-do-refactoring.vercel.app/)                                     |
 | :-------: | :---- |
 |   공용 문서 노션    | 💻 [Notion 링크](https://mewing-halloumi-584.notion.site/Team-7-Project-Workspace-22261be3ce85802badebf9804fd30fdd?pvs=74) |
+
+
+|| 📅 기간 | 😄 팀원 |
+| :-------: | :-------: | :----: |
+|프로젝트|2025.07.03 ~ 2025.08.12 (총 6주) | 5명|
+|리펙토링|2025.08.18 ~ 2025.09.05 (총 3주) | 3명|
+
+
 
 ### 📝 이런 기능들이 있어요
 
@@ -44,10 +49,10 @@
   </tr>
   <tr>
     <td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3A42bbb89f-74f4-47be-b92e-224334a42656%3Aimage.png?table=block&id=24f61be3-ce85-800c-8622-c5c3891954a0&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2"  alt="signup page" width = 100% >
+      <img src="https://github.com/user-attachments/assets/43cfd3d6-a079-4db3-b6a7-0e59b2be080d"  alt="signup page" width = 100% >
     </td>
     <td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3A5dea488f-8f8d-4c88-9cb3-dfab56a29b41%3Aimage.png?table=block&id=24f61be3-ce85-801e-b284-f174a8463caa&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2" alt="login page" width = 100%>
+      <img src="https://github.com/user-attachments/assets/7c1c22ef-a4bc-420e-ab3b-654bc9d0541b" alt="login page" width = 100%>
     </td>
    </tr> 
   <tr>
@@ -60,37 +65,56 @@
   </tr>
   <tr>
     <td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3Ab102205d-a9fa-44ed-8150-339ccebf45e8%3Aimage.png?table=block&id=24f61be3-ce85-80e4-acfb-e1d6a37746c3&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2"  alt="main page" width = 100%>
+      <img src="https://github.com/user-attachments/assets/59fc7900-9b20-4fab-8348-3d3f1f646d87"  alt="main page" width = 100%>
     </td>
     <td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3A1af48abd-f6b1-421c-b3ef-79428bf9991e%3Aimage.png?table=block&id=24f61be3-ce85-809c-8fc0-faf220b27145&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2" alt="add page" width = 100%>
+      <img src="https://github.com/user-attachments/assets/d61697c2-7145-4bf2-bdf0-257648e087c8" alt="add page" width = 100%>
     </td>
    </tr>
    <tr>
     <th>
-      할 일 생성 모달 
+      모든 노트 모아보기
     </th> 
     <th>
-      목표 페이지
+    목표 별 노트 모아보기
     </th>
   </tr>
   <tr>
     <td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3Aebffe53c-7f9b-48ba-bd60-2909e03541f4%3A%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2025-08-14_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_12.10.30.png?table=block&id=24f61be3-ce85-80be-90f4-de7d80df8b30&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2" alt="list page" width = 100%>
+      <img src="https://github.com/user-attachments/assets/1fa1e895-8296-4c31-adc9-49360157a242" alt="list page" width = 100%>
     </td>
     <td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3Ac3ae7f7e-427b-4254-a3b8-e21ad533b145%3A%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2025-08-14_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_12.13.10.png?table=block&id=24f61be3-ce85-8011-91ad-d242b04a5ff7&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2" alt="review page" width = 100%>
+      <img src="https://github.com/user-attachments/assets/2df51fde-fe54-4894-953f-c2876a48efb4" alt="review page" width = 100%>
     </td>
   </tr> 
   <tr>
    <th>
-      노트 모아보기
+      목표 전체 리스트
+    </th>
+	  <th>
+      목표 별 페이지
     </th>
   </tr>
   <tr>  
 	<td>
-      <img src="https://mewing-halloumi-584.notion.site/image/attachment%3Ac3ae7f7e-427b-4254-a3b8-e21ad533b145%3A%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2025-08-14_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_12.13.10.png?table=block&id=24f61be3-ce85-8011-91ad-d242b04a5ff7&spaceId=9e462b86-d673-41b8-b0db-505560448103&width=800&userId=&cache=v2" alt="mypage" width = 100%>
-    </td
+      <img src="https://github.com/user-attachments/assets/8873a00b-3ca0-4feb-983c-0e1357da994d" alt="mypage" width = 100%>
+	</td>
+	  <td>
+      <img src="https://github.com/user-attachments/assets/583df3e1-fecb-4e9d-a35c-f840188a310d" alt="mypage" width = 100%>
+	</td>
+  </tr>
+	  </tr> 
+  <tr>
+   <th>
+      노트 작성
+    </th>
+	
+  </tr>
+  <tr>  
+	<td>
+      <img src="https://github.com/user-attachments/assets/43ebf0d0-6c54-40c6-a8a6-ecf475bc44eb" alt="mypage" width = 100%>
+	</td>
+
   </tr>
       <br/>
 </table>	
@@ -153,6 +177,7 @@
       <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
       <img src="https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
       <img src="https://img.shields.io/badge/TipTap-9747FF?style=for-the-badge&logo=tiptap&logoColor=white" />
+		<img src="https://img.shields.io/badge/shadcn/ui-000000?style=for-the-badge&logo=shadcnui&logoColor=white" />
     </td>
   </tr>
   <tr>

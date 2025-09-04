@@ -7,6 +7,8 @@ import ToastProvider from './providers/toast-provider'
 
 import 'react-toastify/dist/ReactToastify.css'
 
+import 'highlight.js/styles/atom-one-dark.css'
+
 import type {Metadata} from 'next'
 
 import './globals.css'
