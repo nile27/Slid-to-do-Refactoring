@@ -1,4 +1,5 @@
 import {fireEvent, render, screen} from '@testing-library/react'
+
 import GoalList from '@/components/navigation/components/goal-list'
 import Profile from '@/components/navigation/components/sidebar-profile'
 import SideTimer from '@/components/navigation/components/side-timer'
@@ -63,19 +64,19 @@ jest.mock('@/store/timer-store', () => ({
 test('버튼 클릭 시 스토어 메소드 호출', () => {
     render(<SideTimer />)
 
-    const playBtn = screen.getByRole('button', {name: /play/i})
-    const stopBtns = screen.getAllByRole('button', {name: /stop/i})
-    const resetBtn = screen.getByRole('button', {name: /reset/i})
+    const playButton = screen.getByRole('button', {name: /play/i})
+    const stopButton = screen.getAllByRole('button', {name: /stop/i})
+    const resetButton = screen.getByRole('button', {name: /reset/i})
 
-    expect(playBtn).toBeInTheDocument()
-    expect(resetBtn).toBeInTheDocument()
+    expect(playButton).toBeInTheDocument()
+    expect(resetButton).toBeInTheDocument()
 
-    fireEvent.click(playBtn)
+    fireEvent.click(playButton)
     expect(start).toHaveBeenCalled()
 
-    fireEvent.click(stopBtns[0])
+    fireEvent.click(stopButton[0])
     expect(stop).toHaveBeenCalled()
 
-    fireEvent.click(resetBtn)
+    fireEvent.click(resetButton)
     expect(reset).toHaveBeenCalled()
 })
