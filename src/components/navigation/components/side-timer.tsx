@@ -33,7 +33,7 @@ const SideTimer = () => {
                         <Image src={'/dashboard/stop.svg'} alt="stop" width={24} height={24} />
                     </button>
                     <button onClick={reset} className="flex justify-center items-center  bg-white rounded-full w-8 h-8">
-                        <Image src={'/dashboard/reset.svg'} alt="stop" width={24} height={24} />
+                        <Image src={'/dashboard/reset.svg'} alt="reset" width={24} height={24} />
                     </button>
                 </div>
             </div>
