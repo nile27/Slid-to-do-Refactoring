@@ -1,8 +1,8 @@
 import {fireEvent, render, screen} from '@testing-library/react'
 
 import GoalList from '@/components/navigation/components/goal-list'
-import Profile from '@/components/navigation/components/sidebar-profile'
 import SideTimer from '@/components/navigation/components/side-timer'
+import Profile from '@/components/navigation/components/sidebar-profile'
 
 jest.mock('@/hooks/use-custom-query', () => ({
     useCustomQuery: () => ({
