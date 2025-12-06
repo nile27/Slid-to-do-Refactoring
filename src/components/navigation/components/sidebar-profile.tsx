@@ -8,20 +8,15 @@ import axios from 'axios'
 
 import {useCustomQuery} from '@/hooks/use-custom-query'
 import useToast from '@/hooks/use-toast'
-import {get} from '@/lib/common-api'
+import {users} from '@/lib/query-keys'
 
 import type {UserType} from '@/types/user'
-
-const getProfile = async (): Promise<UserType> => {
-    const response = await get<UserType>({endpoint: `user`})
-    return response.data
-}
 
 // 로고 및 유저 정보 Component
 const SidebarProfile = () => {
     const router = useRouter()
     const {showToast} = useToast()
-    const {data: userData} = useCustomQuery<UserType>(['userData'], async () => getProfile(), {
+    const {data: userData} = useCustomQuery<UserType>(users.user().queryKey, users.user().queryFn, {
         errorDisplayType: 'toast',
         mapErrorMessage: (error) => {
             const typedError = error as {message?: string; response?: {data?: {message?: string}}}
@@ -47,24 +42,30 @@ const SidebarProfile = () => {
     }
 
     return (
-        <div className="flex w-full h-auto gap-2 mb-4 justify-between items-center">
-            <Image
-                src={'/sidebar/profile.svg'}
-                alt="profile"
-                width={24}
-                height={24}
-                className=" w-16 h-16 p-2 rounded-full mobile:w-5 mobile:h-5 mobile:p-0"
-            />
-            <div className="w-full h-auto mobile:flex mobile: justify-between mobile:items-end">
-                <div className="flex flex-col">
-                    <p className="text-sm font-medium overflow-x-hidden w-full">{userData?.name}</p>
-                    <p className="text-sm font-medium overflow-x-hidden w-full">{userData?.email}</p>
+        <div className=" flex flex-col w-full h-auto gap-5 mb-2 justify-between items-center border-t-1 border-custom_slate-300 py-2">
+            <div className="flex w-full h-auto gap-3  justify-between items-center">
+                <Image
+                    src={'/sidebar/profile.svg'}
+                    alt="profile"
+                    width={24}
+                    height={24}
+                    className=" w-13 h-13 p-2 rounded-full mobile:w-5 mobile:h-5 mobile:p-0"
+                />
+                <div className="w-full h-auto mobile:flex mobile: justify-between mobile:items-end">
+                    <div className="flex flex-col">
+                        <p className="text-sm font-medium overflow-x-hidden w-full truncate">{userData?.name}</p>
+                        <p className="text-sm font-medium overflow-x-hidden w-full truncate">{userData?.email}</p>
+                    </div>
                 </div>
-
-                <button className="text-xs text-gray-500 hover:underline" onClick={handleLogout}>
-                    로그아웃
-                </button>
             </div>
+
+            <button
+                className=" flex rounded-sm px-5 gap-4 text-[16px] font-extrabold w-full py-2 hover:bg-custom_slate-800 text-center text-white bg-custom_slate-600 hover:underline"
+                onClick={handleLogout}
+            >
+                <Image src={'/sidebar/logout.svg'} alt="logout" width={24} height={24} />
+                Logout
+            </button>
         </div>
     )
 }

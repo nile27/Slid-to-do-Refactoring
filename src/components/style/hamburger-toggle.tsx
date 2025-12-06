@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-export default function HamburgerToggle({group}: {group: boolean | 'noState'}) {
+const HamburgerToggle = ({group}: {group: boolean | 'noState'}) => {
     return (
         <div className=" w-full h-full flex flex-col justify-center items-center gap-1  ">
             <span
@@ -29,3 +29,4 @@ export default function HamburgerToggle({group}: {group: boolean | 'noState'}) {
         </div>
     )
 }
+export default HamburgerToggle

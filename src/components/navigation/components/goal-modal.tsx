@@ -9,7 +9,8 @@ import ButtonStyle from '@/components/style/button-style'
 import InputStyle from '@/components/style/input-style'
 import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import useToast from '@/hooks/use-toast'
-import {post} from '@/lib/common-api'
+import {goalCreatApi} from '@/lib/goals/api'
+import {goals} from '@/lib/query-keys'
 import {useModalStore} from '@/store/use-modal-store'
 
 const GoalModal = () => {
@@ -19,35 +20,22 @@ const GoalModal = () => {
     const {clearModal} = useModalStore()
     const {showToast} = useToast()
 
-    const {mutate} = useCustomMutation(
-        async () => {
-            if (inputChange.length === 0 || !inputChange) {
-                throw new Error('목표를 입력해주세요.')
+    const {mutate} = useCustomMutation(async () => goalCreatApi(inputChange), {
+        errorDisplayType: 'none',
+        onSuccess: () => {
+            showToast('목표가 생성되었습니다.')
+            clientQuery.invalidateQueries({queryKey: goals.all()})
+
+            clearModal()
+        },
+        onError: (error) => {
+            const status = (error as Error & {status?: number}).status || 500
+
+            if (status !== 500) {
+                setErrorChange('제목을 입력해주세요.')
             }
-            return await post({
-                endpoint: `goals`,
-                data: {title: inputChange},
-            })
         },
-        {
-            errorDisplayType: 'none',
-            onSuccess: () => {
-                showToast('목표가 생성되었습니다.')
-                clientQuery.invalidateQueries({queryKey: ['goals']})
-                clientQuery.invalidateQueries({queryKey: ['myGoals']})
-                clientQuery.invalidateQueries({queryKey: ['navMygoals']})
-
-                clearModal()
-            },
-            onError: (error) => {
-                const status = (error as Error & {status?: number}).status || 500
-
-                if (status !== 500) {
-                    setErrorChange('제목을 입력해주세요.')
-                }
-            },
-        },
-    )
+    })
 
     const inputOnChange = (changeEvent: React.ChangeEvent<HTMLInputElement>) => {
         setInputChange(changeEvent.target.value)
@@ -78,11 +66,20 @@ const GoalModal = () => {
                     placeholder="새 목표를 작성해주세요."
                     className="w-full outline"
                     onChange={(changeEvent) => inputOnChange(changeEvent)}
-                    maxLength={100}
+                    maxLength={35}
                 />
                 <span className=" w-full px-2 text-subBody-sm font-medium text-red-500">{inputError}</span>
             </main>
-            <ButtonStyle size="full" onClick={() => mutate()}>
+            <ButtonStyle
+                size="full"
+                onClick={() => {
+                    if (inputChange.length === 0 || !inputChange) {
+                        showToast('목표를 입력해주세요.')
+                        return
+                    }
+                    mutate()
+                }}
+            >
                 확인
             </ButtonStyle>
         </section>

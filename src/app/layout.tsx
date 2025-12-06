@@ -2,9 +2,12 @@ import {pretendard} from '@/font/pretendard-variable'
 
 import ModalProvider from './providers/modal-provider'
 import QueryProvider from './providers/query-provider'
+import TimerProvider from './providers/timer-provider'
 import ToastProvider from './providers/toast-provider'
 
 import 'react-toastify/dist/ReactToastify.css'
+
+import 'highlight.js/styles/atom-one-dark.css'
 
 import type {Metadata} from 'next'
 
@@ -33,6 +36,7 @@ export default function RootLayout({
                     {children}
                     <ModalProvider />
                     <ToastProvider />
+                    <TimerProvider />
                 </QueryProvider>
             </body>
         </html>

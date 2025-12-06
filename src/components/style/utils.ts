@@ -1,11 +1,11 @@
 import {clsx, type ClassValue} from 'clsx'
 import {twMerge} from 'tailwind-merge'
 
-export function cn(...inputs: ClassValue[]) {
+export const cn = (...inputs: ClassValue[]) => {
     return twMerge(clsx(inputs))
 }
 
-export function dateformat(createAt?: string): string {
+export const dateformat = (createAt?: string): string => {
     if (!createAt) return ''
 
     const dateObject = new Date(createAt)

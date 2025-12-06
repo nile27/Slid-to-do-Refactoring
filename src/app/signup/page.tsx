@@ -18,7 +18,7 @@ const SignPage = () => {
         register,
         handleSubmit,
         watch,
-        formState: {errors, isValid},
+        formState: {errors},
         setError,
     } = useForm<SignupFormData>()
 
@@ -66,7 +66,6 @@ const SignPage = () => {
                     handleSubmit={handleSubmit}
                     register={register}
                     errors={errors}
-                    isValid={isValid}
                     isLoading={loading}
                     validationRules={{
                         name: {

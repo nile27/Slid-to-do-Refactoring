@@ -1,11 +1,6 @@
 import {Extension} from '@tiptap/core'
 
-export interface MaxLinesOptions {
-    /** 최상위 블록(문단) 최대 개수 */
-    limit: number
-    /** Shift+Enter(soft break) 허용 여부 */
-    allowSoftBreak?: boolean
-}
+import type {MaxLinesOptions} from '@/types/editor'
 
 export const MaxLines = Extension.create<MaxLinesOptions>({
     name: 'maxLines',

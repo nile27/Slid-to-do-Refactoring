@@ -1,5 +1,7 @@
 import type {Goal} from './goals'
 
+export type FilterValue = 'ALL' | 'TODO' | 'DONE'
+
 export interface Todo {
     id: number
     title: string
@@ -20,7 +22,7 @@ export interface TodoResponse extends Todo {
 
 export interface TodoListDetailResponse {
     totalCount: number
-    nextCursor: number | null
+    nextCursor: number
     todos: TodoResponse[]
 }
 
@@ -45,4 +47,11 @@ export interface PatchTodoRequest {
     goalId?: number
     linkUrl?: string
     fileUrl?: string
+}
+
+/**단일 목표 달성률 응답 */
+export interface TodoProgress {
+    progress: number
+    totalCount?: number
+    isDashboard: boolean
 }

@@ -3,108 +3,51 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import LoadingSpinner from '@/components/common/loading-spinner'
-import AddTodoModal from '@/components/common/modal/add-todo-modal'
-import {useInfiniteScrollQuery} from '@/hooks/use-infinite-scroll'
-import {useModal} from '@/hooks/use-modal'
-import {get} from '@/lib/common-api'
+type Menu = Record<string, string>
 
-import ButtonStyle from '../../style/button-style'
-
-import type {Goal, GoalResponse} from '@/types/goals'
-
-const GoalList = ({isMobile}: {isMobile: boolean | 'noState'}) => {
-    const {openModal} = useModal(<AddTodoModal />)
-
-    const getGoalsData = () => {
-        return async (cursor: number | undefined) => {
-            try {
-                const urlParameter = cursor === undefined ? '' : `&cursor=${cursor}`
-                const response = await get<{goals: GoalResponse[]; nextCursor: number | undefined}>({
-                    endpoint: `goals?size=10&sortOrder=newest${urlParameter}`,
-                })
-
-                return {
-                    data: response.data.goals,
-                    nextCursor: response.data.nextCursor,
-                }
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    throw error
-                }
-                throw new Error(String(error))
-            }
-        }
-    }
-    const {
-        data: goals,
-        ref: goalReference,
-        isLoading: loadingGoals,
-        hasMore: hasMoreGoals,
-        isFetched,
-    } = useInfiniteScrollQuery<GoalResponse>({
-        queryKey: ['navMygoals'],
-        fetchFn: getGoalsData(),
-    })
+const GoalList = () => {
+    const menuList: Menu[] = [
+        {
+            name: '대시 보드',
+            href: '/',
+            src: '/sidebar/ic-home.svg',
+        },
+        {
+            name: '모든 노트 모아보기',
+            href: '/notes',
+            src: '/sidebar/document.svg',
+        },
+        {
+            name: '할일 리스트',
+            href: '/todos',
+            src: '/sidebar/sidebar-todo.svg',
+        },
+        {
+            name: '목표 리스트',
+            href: '/goals',
+            src: '/sidebar/sidebar-goal.svg',
+        },
+    ]
 
     return (
-        <section
-            aria-labelledby="goals-heading"
-            className=" border-[#E2E8F0] h-full grow flex flex-col mt-4  flex-1 min-h-0"
-        >
-            <div className="flex flex-col h-full min-h-0 flex-1 mb-3 ">
-                <div className="flex  pl-2 gap-3 h-6">
-                    <Image src={'/sidebar/flag.svg'} alt="flag" width={13} height={15} />
-                    <h2 id="goals-heading" className=" text-left w-full   text-subTitle-base   text-custom_slate-700">
-                        목표
-                    </h2>
+        <nav aria-labelledby="goals-heading" className=" border-[#E2E8F0]   flex flex-col mt-4  h-[300px] ">
+            <p className=" border-b-1 border-custom_slate-300 p-2 pl-4 mb-2 text-body-base">Menu</p>
 
-                    {isMobile === true && goals.length > 0 && (
-                        <ButtonStyle onClick={openModal} type="button" size="small" color="outline">
-                            + 새 할일
-                        </ButtonStyle>
-                    )}
-                </div>
-
-                <div className="p-4   space-y-4 flex-nowrap overflow-y-auto overflow-scroll  flex-1 min-h-0">
-                    {loadingGoals || !isFetched ? (
-                        <LoadingSpinner />
-                    ) : goals.length > 0 ? (
-                        <>
-                            {goals.map((goal: Goal) => (
-                                <Link
-                                    href={`/goals/${goal.id}`}
-                                    className="flex h-[23px] items-center whitespace-nowrap cursor-pointer group overflow-hidden"
-                                    key={goal.id}
-                                >
-                                    <span className="text-custom_slate-700 text-body mr-1 group-hover:opacity-70">
-                                        ・
-                                    </span>
-                                    <span className="text-custom_slate-700 text-body-sm tracking-tight truncate group-hover:opacity-70">
-                                        {goal.title}
-                                    </span>
-                                </Link>
-                            ))}
-
-                            {hasMoreGoals && !loadingGoals && goals.length > 0 && <div ref={goalReference} />}
-
-                            {!hasMoreGoals && goals.length > 0 && (
-                                <div className="mt-4 text-gray-400 text-sm">모든 목표를 다 불러왔어요</div>
-                            )}
-                        </>
-                    ) : (
-                        <div className="flex items-center justify-center text-sm text-custom_slate-500 text-center h-[120px]">
-                            해야할 일이 아직 없어요
-                        </div>
-                    )}
-                </div>
-            </div>
-            {!isMobile && goals.length > 0 && (
-                <ButtonStyle type="button" onClick={openModal} size="full" color="outline">
-                    + 새 할일
-                </ButtonStyle>
-            )}
-        </section>
+            <ul className="w-full h-auto  space-y-2.5">
+                {menuList.map((item: Menu) => (
+                    <Link
+                        href={item.href}
+                        key={item.name}
+                        className="w-full items-center  hover:bg-custom_blue-100 h-[40px] flex gap-2 pl-2 py-1 rounded-sm group  "
+                    >
+                        <li className="w-full flex  gap-2 border-l-4 pl-2 border-transparent group-hover:border-l-4 group-hover:border-custom_blue-400 ">
+                            <Image src={item.src} alt="image" width={26} height={26} />
+                            <span className="w-full h-auto p-2">{item.name}</span>
+                        </li>
+                    </Link>
+                ))}
+            </ul>
+        </nav>
     )
 }
 

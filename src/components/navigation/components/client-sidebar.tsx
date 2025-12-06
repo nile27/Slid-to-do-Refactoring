@@ -10,6 +10,7 @@ import useModal from '@/hooks/use-modal'
 
 import SidebarList from './goal-list'
 import GoalModal from './goal-modal'
+import SideTimer from './side-timer'
 import SidebarProfile from './sidebar-profile'
 import ButtonStyle from '../../style/button-style'
 
@@ -21,7 +22,7 @@ const ClientSidebar = ({isOpen, onClickHandler}: ClientInterface) => {
 
     return (
         <>
-            <header className=" h-auto w-full border-b-[#E2E8F0] flex justify-between items-center mb-5">
+            <header className=" h-[33px] w-full border-b-[#E2E8F0] flex justify-between items-center mb-5">
                 <Link
                     href="/"
                     className={`${isOpen === 'noState' ? 'flex tablet:hidden mobile:hidden' : isOpen ? 'flex animate-opacity-open' : 'hidden animate-opacity-close '} w-auto h-[32px] min-w-[32px] flex`}
@@ -63,42 +64,18 @@ const ClientSidebar = ({isOpen, onClickHandler}: ClientInterface) => {
                 )}
             </header>
             <div
-                className={` flex-1 min-h-0    flex-col w-full h-full  ${isOpen === 'noState' ? 'flex tablet:hidden mobile:hidden' : isOpen ? 'flex animate-opacity-open ' : ' animate-opacity-close mobile:hidden'}`}
+                className={`  flex-1 min-h-0 justify-between    flex-col w-full h-full  ${isOpen === 'noState' ? 'flex tablet:hidden mobile:hidden' : isOpen ? 'flex animate-opacity-open ' : ' animate-opacity-close mobile:hidden'}`}
             >
-                <SidebarProfile />
-                {!isMobile && (
+                {/* 주요 네비게이션 */}
+                <div className="w-full h-auto">
+                    <SideTimer />
                     <ButtonStyle size="full" onClick={openModal}>
                         + 새 목표
                     </ButtonStyle>
-                )}
-                <hr className=" mt-5 -mx-5 border-t-2 border-gray-200" />
-                {/* 주요 네비게이션 */}
-                <nav
-                    aria-label="주요"
-                    className=" w-full h-13 min-h-13 overflow-y-auto flex flex-col max-sm:flex-row max-sm:justify-between max-sm:items-center justify-center items-start "
-                >
-                    <Link
-                        href={'/dashboard'}
-                        className=" py-2 p-2 w-full h-auto  text-subTitle-base text-custom_slate-700 flex items-center gap-3 hover:opacity-80  "
-                    >
-                        <Image
-                            src={'/sidebar/home.svg'}
-                            width={15}
-                            height={15}
-                            alt="Subtract"
-                            className="w-[15px] h-[15px]"
-                        />
-                        대시보드
-                    </Link>
-                    {isMobile === true && (
-                        <ButtonStyle onClick={openModal} size="small">
-                            + 새 목표
-                        </ButtonStyle>
-                    )}
-                </nav>
-                <hr className=" -mx-5  border-t-2 border-gray-200" />
-                {/* 목표 섹션 */}
-                <SidebarList isMobile={isMobile} />
+                    <SidebarList />
+                </div>
+
+                <SidebarProfile />
             </div>
         </>
     )

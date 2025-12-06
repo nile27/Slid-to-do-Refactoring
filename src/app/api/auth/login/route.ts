@@ -28,8 +28,9 @@ export const POST = async (request: Request) => {
             value: data.accessToken,
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
             path: '/',
-            maxAge: 60 * 60 * 24,
+            maxAge: 60 * 60,
         })
 
         cookie.set({
@@ -37,6 +38,7 @@ export const POST = async (request: Request) => {
             value: data.refreshToken,
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
             path: '/',
             maxAge: 60 * 60 * 24,
         })

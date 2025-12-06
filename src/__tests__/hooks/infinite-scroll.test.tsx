@@ -94,4 +94,100 @@ describe('useInfiniteScrollQuery 테스트', () => {
             expect(fetchNextPageMock).not.toHaveBeenCalled()
         })
     })
+    it('inView=true + hasNextPage=true + isFetchingNextPage=false일 때 fetchNextPage 호출되어야 한다', async () => {
+        const fetchNextPageMock = jest.fn()
+
+        useInViewMock.mockReturnValueOnce({
+            ref: jest.fn(),
+            inView: true,
+        } as unknown as ReturnType<typeof useInViewMock>)
+
+        useInfiniteQueryMock.mockReturnValueOnce(
+            createUseInfiniteQueryReturn({
+                fetchNextPage: fetchNextPageMock,
+                hasNextPage: true,
+                isFetchingNextPage: false,
+                isLoading: false,
+            }),
+        )
+
+        renderHook(() =>
+            useInfiniteScrollQuery({
+                queryKey: ['test'],
+                fetchFn: jest.fn(),
+            }),
+        )
+
+        await waitFor(() => {
+            expect(fetchNextPageMock).toHaveBeenCalled()
+        })
+    })
+
+    it('fetchFn이 실패하면 isError가 true로 반환되고 error가 설정되어야 한다', () => {
+        const error = new Error('fetch 실패')
+        useInfiniteQueryMock.mockReturnValueOnce(
+            createUseInfiniteQueryReturn({
+                isError: true,
+                error,
+                isLoading: false,
+            }),
+        )
+
+        const {result} = renderHook(() =>
+            useInfiniteScrollQuery({
+                queryKey: ['test'],
+                fetchFn: jest.fn(),
+            }),
+        )
+
+        expect(result.current.isError).toBe(true)
+        expect(result.current.error).toBe(error)
+    })
+
+    it('hasMore=false일 때 fetchNextPage 호출되지 않아야 한다', async () => {
+        const fetchNextPageMock = jest.fn()
+
+        useInViewMock.mockReturnValueOnce({
+            ref: jest.fn(),
+            inView: true,
+        } as unknown as ReturnType<typeof useInViewMock>)
+
+        useInfiniteQueryMock.mockReturnValueOnce(
+            createUseInfiniteQueryReturn({
+                fetchNextPage: fetchNextPageMock,
+                hasNextPage: false,
+                isFetchingNextPage: false,
+                isLoading: false,
+            }),
+        )
+
+        renderHook(() =>
+            useInfiniteScrollQuery({
+                queryKey: ['test'],
+                fetchFn: jest.fn(),
+            }),
+        )
+
+        await waitFor(() => {
+            expect(fetchNextPageMock).not.toHaveBeenCalled()
+        })
+    })
+
+    it('쿼리가 한 번이라도 fetch되면 isFetched가 true로 반환되어야 한다', () => {
+        useInfiniteQueryMock.mockReturnValueOnce(
+            createUseInfiniteQueryReturn({
+                isFetched: true,
+                isLoading: false,
+            }),
+        )
+
+        const {result} = renderHook(() =>
+            useInfiniteScrollQuery({
+                queryKey: ['test'],
+                fetchFn: jest.fn(),
+            }),
+        )
+
+        expect(result.current.isFetched).toBe(true)
+    })
 })

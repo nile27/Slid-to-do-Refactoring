@@ -10,13 +10,14 @@ import LoadingSpinner from '@/components/common/loading-spinner'
 import ButtonStyle from '@/components/style/button-style'
 import InputStyle from '@/components/style/input-style'
 import {useCustomQuery} from '@/hooks/use-custom-query'
-import {goalPrograssApi} from '@/lib/goals/api'
+import {todos} from '@/lib/query-keys'
 
 import ProgressBar from './prograss-motion'
 
-import type {Goal, GoalProgress} from '@/types/goals'
+import type {Goal} from '@/types/goals'
+import type {TodoProgress} from '@/types/todos'
 
-export default function GoalHeader({
+const GoalHeader = ({
     goal,
     goalTitle,
     goalEdit,
@@ -36,13 +37,14 @@ export default function GoalHeader({
     goalDeleteModal: () => void
     handleInputUpdate: (event: React.ChangeEvent<HTMLInputElement>) => void
     handleGoalAction: (mode: string) => void
-}) {
+}) => {
     const [progress, setProgress] = useState<number>(0)
     const {goalId} = useParams()
+
     /** 목표 달성 API */
-    const {data: progressData, isLoading} = useCustomQuery<GoalProgress>(
-        ['goals', goalId, 'progress'],
-        async () => goalPrograssApi(Number(goalId)),
+    const {data: progressData, isLoading} = useCustomQuery<TodoProgress>(
+        todos.prograss(Number(goalId)).queryKey,
+        todos.prograss(Number(goalId)).queryFn,
         {
             errorDisplayType: 'toast',
             mapErrorMessage: (error) => {
@@ -70,6 +72,31 @@ export default function GoalHeader({
         }
     }, [goalEdit])
 
+    const triggerReference = useRef<HTMLDivElement>(null)
+    const menuReference = useRef<HTMLDivElement>(null)
+
+    // 외부 클릭 닫기
+    useEffect(() => {
+        const handleClickOutside = (event_: MouseEvent) => {
+            const t = event_.target as Node
+            if (menuReference.current?.contains(t)) return
+            if (triggerReference.current?.contains(t)) return
+            setMoreButton(false)
+        }
+        const onEsc = (event_: KeyboardEvent) => {
+            if (event_.key === 'Escape') setMoreButton(false)
+        }
+
+        if (moreButton) {
+            document.addEventListener('mousedown', handleClickOutside)
+            document.addEventListener('keydown', onEsc)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('keydown', onEsc)
+        }
+    }, [moreButton, setMoreButton])
+
     if (isLoading) return <LoadingSpinner />
     return (
         <div className="mt-4 py-4 px-6 bg-white rounded">
@@ -86,17 +113,18 @@ export default function GoalHeader({
                                     name="title"
                                     className="max-w-full"
                                     onChange={handleInputUpdate}
-                                    maxLength={100}
+                                    maxLength={35}
                                     ref={inputReference}
                                 />
-                                <ButtonStyle
-                                    size="medium"
-                                    onClick={() => handleGoalAction('edit')}
-                                    disabled={goal.title === goalTitle}
-                                >
+                                <ButtonStyle size="medium" type="submit" disabled={goal.title === goalTitle}>
                                     수정
                                 </ButtonStyle>
-                                <ButtonStyle size="medium" onClick={() => setGoalEdit(false)} color="outline">
+                                <ButtonStyle
+                                    size="medium"
+                                    type="button"
+                                    onClick={() => setGoalEdit(false)}
+                                    color="outline"
+                                >
                                     취소
                                 </ButtonStyle>
                             </form>
@@ -116,10 +144,14 @@ export default function GoalHeader({
                         className="flex-shrink-0 cursor-pointer relative"
                         onClick={() => setMoreButton(!moreButton)}
                         role="moreButton"
+                        ref={triggerReference}
                     >
                         <Image src="/goals/ic-more.svg" alt="더보기버튼" width={24} height={24} />
                         {moreButton && (
-                            <div className="w-24 py-2 absolute right-0 top-7 flex gap-2 flex-col rounded text-center shadow-md z-10 bg-white">
+                            <div
+                                className="w-24 py-2 absolute right-0 top-7 flex gap-2 flex-col rounded text-center shadow-md z-10 bg-white"
+                                ref={menuReference}
+                            >
                                 <button type="button" onClick={() => setGoalEdit(true)}>
                                     수정하기
                                 </button>
@@ -131,10 +163,12 @@ export default function GoalHeader({
                     </div>
                 )}
             </div>
-            <div className="mt-6 text-subBody font-semibold">Progress</div>
+
             <div className="mt-3.5">
-                <ProgressBar progress={progress || 0} />
+                <ProgressBar progress={progress || 0} isDashboard={false} />
             </div>
         </div>
     )
 }
+
+export default GoalHeader

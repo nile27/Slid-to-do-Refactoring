@@ -9,47 +9,62 @@ import LoadingSpinner from '@/components/common/loading-spinner'
 import AddTodoModal from '@/components/common/modal/add-todo-modal'
 import EditTodoModal from '@/components/common/modal/edit-todo-modal'
 import {useCustomMutation} from '@/hooks/use-custom-mutation'
-import {useCustomQuery} from '@/hooks/use-custom-query'
+import {useInfiniteScrollQuery} from '@/hooks/use-infinite-scroll'
 import {useModal} from '@/hooks/use-modal'
 import {del, get, patch} from '@/lib/common-api'
+import {todos as queryTodo} from '@/lib/query-keys'
 
 import Filter from './components/filter'
 import TodoItem from '../../components/common/todo-item'
 
-import type {TodoListDetailResponse, TodoResponse} from '@/types/todos'
-
-type FilterValue = 'ALL' | 'TODO' | 'DONE'
+import type {InfiniteScrollOptions} from '@/types/infinite-scroll'
+import type {FilterValue, TodoListDetailResponse, TodoResponse} from '@/types/todos'
 
 const Page = () => {
     const queryClient = useQueryClient()
 
     const [selectedFilter, setSelectedFilter] = useState<FilterValue>('ALL')
+    const [pageInfo, setPageInfo] = useState<{totalCount?: number; nextCursor?: number}>({})
 
-    const {data, isLoading} = useCustomQuery<TodoListDetailResponse>(
-        ['todos', selectedFilter],
-        async () => {
-            const parameter = new URLSearchParams()
+    const getTodosList = async (cursor?: number) => {
+        try {
+            const urlParameter = new URLSearchParams()
 
-            if (selectedFilter === 'TODO') parameter.append('done', 'false')
-            else if (selectedFilter === 'DONE') parameter.append('done', 'true')
+            if (cursor !== undefined) urlParameter.set('cursor', String(cursor))
+            if (selectedFilter === 'TODO') urlParameter.set('done', 'false')
+            else if (selectedFilter === 'DONE') urlParameter.set('done', 'true')
 
-            const response = await get<TodoListDetailResponse>({
-                endpoint: `todos?${parameter.toString()}`,
+            const qs = urlParameter.toString()
+            const endpoint = qs ? `todos?${qs}` : 'todos'
+            const result = await get<TodoListDetailResponse>({endpoint})
+
+            setPageInfo({
+                totalCount: result.data.totalCount ?? undefined,
+                nextCursor: result.data.nextCursor ?? undefined,
             })
 
-            return response.data
-        },
-        {
-            errorDisplayType: 'toast',
-            mapErrorMessage: (error) => {
-                const typedError = error as {message?: string; response?: {data?: {message?: string}}}
-                if (axios.isAxiosError(error)) {
-                    return error.response?.data.message || '서버 오류가 발생했습니다.'
-                }
-                return typedError.message || '할 일을 불러오는 중 오류가 발생했습니다.'
-            },
-        },
-    )
+            return {
+                data: result.data.todos,
+                nextCursor: result.data.nextCursor ?? undefined,
+                totalCount: result.data.totalCount ?? undefined,
+            }
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                throw error
+            }
+            throw new Error(String(error))
+        }
+    }
+
+    const {
+        data: todos,
+        isLoading,
+        ref,
+        hasMore,
+    } = useInfiniteScrollQuery({
+        queryKey: queryTodo.list(selectedFilter).queryKey,
+        fetchFn: (cursor) => getTodosList(cursor),
+    } as InfiniteScrollOptions<TodoResponse>)
 
     const {mutate: updateTodo} = useCustomMutation(
         async ({todoId, newDone}: {todoId: number; newDone: boolean}) => {
@@ -72,7 +87,7 @@ const Page = () => {
                 return typedError.message || '할일 수정 중 오류가 발생했습니다.'
             },
             onSuccess: () => {
-                queryClient.invalidateQueries({queryKey: ['todos']})
+                queryClient.invalidateQueries({queryKey: queryTodo.all()})
             },
         },
     )
@@ -97,7 +112,7 @@ const Page = () => {
                 return typedError.message || '할일 수정 중 오류가 발생했습니다.'
             },
             onSuccess: () => {
-                queryClient.invalidateQueries({queryKey: ['todos']})
+                queryClient.invalidateQueries({queryKey: queryTodo.all()})
             },
         },
     )
@@ -116,7 +131,7 @@ const Page = () => {
             <div className="desktop-layout flex flex-col min-h-screen">
                 <div className="flex items-center justify-between ">
                     <h1 className="text-lg font-semibold">
-                        모든 할 일 {data?.totalCount ? `(${data.totalCount})` : ''}
+                        모든 할 일 {pageInfo.totalCount ? `(${pageInfo.totalCount})` : ''}
                     </h1>
                     <button className="text-sm font-semibold text-custom_blue-500" onClick={openAddTodoModal}>
                         + 할 일 추가
@@ -157,25 +172,27 @@ const Page = () => {
                     ) : (
                         <>
                             <div className="flex flex-col gap-2 mt-4 overflow-y-auto flex-1 min-h-0">
-                                {data?.todos?.length === 0 && selectedFilter === 'ALL' && (
+                                {todos?.length === 0 && selectedFilter === 'ALL' && (
                                     <div className="flex items-center justify-center flex-1 text-sm text-custom_slate-400">
                                         등록한 일이 없어요
                                     </div>
                                 )}
 
-                                {data?.todos?.length === 0 && selectedFilter === 'TODO' && (
+                                {todos?.length === 0 && selectedFilter === 'TODO' && (
                                     <div className="flex items-center justify-center flex-1 text-sm text-custom_slate-400">
                                         해야할 일이 아직 없어요
                                     </div>
                                 )}
 
-                                {data?.todos?.length === 0 && selectedFilter === 'DONE' && (
+                                {todos?.length === 0 && selectedFilter === 'DONE' && (
                                     <div className="flex items-center justify-center flex-1 text-sm text-custom_slate-400">
                                         다 한 일이 아직 없어요
                                     </div>
                                 )}
 
-                                {data?.todos?.map((todo) => (
+                                {hasMore && !isLoading && todos.length > 0 && <div ref={ref} />}
+
+                                {todos?.map((todo) => (
                                     <TodoItem
                                         key={todo.id}
                                         todoDetail={todo}

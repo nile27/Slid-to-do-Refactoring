@@ -9,12 +9,12 @@ import axios from 'axios'
 import 'react-toastify/dist/ReactToastify.css'
 
 import TwoButtonModal from '@/components/common/modal/two-buttom-modal'
-import MarkdownEditor from '@/components/markdown-editor/markdown-editor'
+import MarkdownEditor from '@/components/editor/markdown-editor'
 import ButtonStyle from '@/components/style/button-style'
 import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import useModal from '@/hooks/use-modal'
 import useToast from '@/hooks/use-toast'
-import {noteRegApi} from '@/lib/notes/api'
+import {notes} from '@/lib/query-keys'
 import {useModalStore} from '@/store/use-modal-store'
 import {getTextFromHtml} from '@/utils/text-from-html'
 
@@ -152,16 +152,12 @@ const NoteWriteCompo = ({
 
     /** 작성 완료하기 */
     const {mutate: saveNotes} = useCustomMutation(
-        async () => {
-            const payload = {
-                todoId: Number(todoId),
-                title: subject,
-                content,
-                ...(linkButton && {linkUrl: linkButton}),
-            }
-
-            noteRegApi(payload)
-        },
+        notes.save({
+            todoId: Number(todoId),
+            title: subject,
+            content,
+            ...(linkButton && {linkUrl: linkButton}),
+        }).queryFn,
         {
             errorDisplayType: 'toast',
             mapErrorMessage: (error) => {
@@ -175,7 +171,7 @@ const NoteWriteCompo = ({
             },
             onSuccess: () => {
                 showToast('작성이 완료되었습니다.')
-                router.push(`/notes?goalId=${goalId}`)
+                router.push(`/notes`)
             },
         },
     )

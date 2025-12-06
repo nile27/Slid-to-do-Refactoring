@@ -5,11 +5,12 @@ import LoadingSpinner from '@/components/common/loading-spinner'
 import TodoItem from '@/components/common/todo-item'
 import useModal from '@/hooks/use-modal'
 
+import {HasmoreLoading} from '../common/hasmore-loading'
 import EditTodoModal from '../common/modal/edit-todo-modal'
 
 import type {TodoResponse} from '@/types/todos'
 
-export default function InfiniteTodoList({
+const InfiniteTodoList = ({
     title,
     todos,
     isLoading,
@@ -29,7 +30,7 @@ export default function InfiniteTodoList({
     onToggle: (todoId: number, newDone: boolean) => void
     onDelete: (todoId: number) => void
     onAddClick?: () => void
-}) {
+}) => {
     /**할일 수정 모달 */
     const {openModal: openEditTodoModal} = useModal((todoDetail: TodoResponse) => (
         <EditTodoModal todoDetail={todoDetail} />
@@ -70,7 +71,7 @@ export default function InfiniteTodoList({
                                         />
                                     </div>
                                 ))}
-                                {hasMore && <div ref={refCallback} style={{height: '1px'}} />}
+                                {hasMore && <HasmoreLoading ref={refCallback} />}
                             </>
                         )}
                     </>
@@ -83,3 +84,5 @@ export default function InfiniteTodoList({
         </div>
     )
 }
+
+export default InfiniteTodoList

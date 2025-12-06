@@ -23,28 +23,28 @@ export const NoteList = ({notesData}: {notesData: NoteCommon[]}) => {
         <div className="mt-4 w-full h-full flex-1">
             {notesData.map((note) => (
                 <div key={note.id} className="mt-4 bg-white rounded-xl border border-custom_slate-100 p-6">
-                    <div className="flex justify-between ">
+                    <div className="flex items-center justify-between border-b-1 border-custom_slate-200 pb-2">
                         <div className="">
                             <Image src="/notes/note-list.svg" alt="icon" width={28} height={28} />
                         </div>
+                        <span
+                            onClick={() => openNoteDetail(note.id)}
+                            className="text-subTitle font-medium cursor-pointer block w-full truncate pl-3"
+                        >
+                            {note.title}
+                        </span>
                         <NotesSelect noteId={note.id} />
                     </div>
 
                     <div className="bg-white rounded-xl">
-                        <div className="border-b-1 border-custom_slate-200 pt-4 pb-3 ">
-                            <span
-                                onClick={() => openNoteDetail(note.id)}
-                                className="text-subTitle font-medium cursor-pointer block w-full truncate"
-                            >
-                                {note.title}
-                            </span>
-                        </div>
-
                         <div className="pt-3 flex items-center gap-2">
                             <div className="p-1 bg-custom_slate-100 text-custom_slate-700 text-subBody font-medium rounded-sm shrink-0 whitespace-nowrap">
                                 To do
                             </div>
-                            <p className=" text-custom_slate-700 text-subBody font-normal min-w-0 truncate"> {note.todo.title}</p>
+                            <p className=" text-custom_slate-700 text-subBody font-normal min-w-0 truncate">
+                                {' '}
+                                {note.todo.title}
+                            </p>
                         </div>
                     </div>
                 </div>

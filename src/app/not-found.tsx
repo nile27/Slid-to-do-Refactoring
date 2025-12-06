@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export default function NotFound() {
+const NotFound = () => {
     return (
         <div className="w-screen h-screen flex items-center justify-center">
             <div className="relative w-[70%] h-[70vh]">
@@ -9,3 +9,5 @@ export default function NotFound() {
         </div>
     )
 }
+
+export default NotFound

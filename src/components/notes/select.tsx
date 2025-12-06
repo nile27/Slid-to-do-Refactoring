@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import {useRouter} from 'next/navigation'
 import React, {useEffect, useRef, useState} from 'react'
 
@@ -11,6 +12,7 @@ import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import useModal from '@/hooks/use-modal'
 import useToast from '@/hooks/use-toast'
 import {noteDeleteApi} from '@/lib/notes/api'
+import {notes} from '@/lib/query-keys'
 
 import TwoButtonModal from '../common/modal/two-buttom-modal'
 
@@ -22,26 +24,23 @@ const NotesSelect: React.FC<{noteId: number}> = ({noteId}) => {
 
     const queryClient = useQueryClient()
 
-    const {mutate: deletNote} = useCustomMutation<void, Error, number>(
-        noteDeleteApi,
-        {
-            errorDisplayType: 'toast',
-            mapErrorMessage: (error) => {
-                const apiError = error as {message?: string; response?: {data?: {message?: string}}}
-                if (axios.isAxiosError(apiError)) {
-                    return apiError.response?.data.message('서버 오류가 발생했습니다.')
-                }
+    const {mutate: deletNote} = useCustomMutation<void, Error, number>(noteDeleteApi, {
+        errorDisplayType: 'toast',
+        mapErrorMessage: (error) => {
+            const apiError = error as {message?: string; response?: {data?: {message?: string}}}
+            if (axios.isAxiosError(apiError)) {
+                return apiError.response?.data.message('서버 오류가 발생했습니다.')
+            }
 
-                return apiError.message || '알 수 없는 오류가 발생했습니다.'
-            },
-
-            onSuccess: () => {
-                /**삭제 성공 후 'notes' 쿼리 무효화 → 자동 리페치*/
-                queryClient.invalidateQueries({queryKey: ['notes']})
-                showToast('삭제가 완료되었습니다')
-            },
+            return apiError.message || '알 수 없는 오류가 발생했습니다.'
         },
-    )
+
+        onSuccess: () => {
+            /**삭제 성공 후 'notes' 쿼리 무효화 → 자동 리페치*/
+            queryClient.invalidateQueries({queryKey: notes.all()})
+            showToast('삭제가 완료되었습니다')
+        },
+    })
 
     /**노트 삭제 확인 모달 */
     const {openModal, closeModal} = useModal(
@@ -75,18 +74,14 @@ const NotesSelect: React.FC<{noteId: number}> = ({noteId}) => {
     }, [isOpen])
 
     return (
-        <div className="relative inline-block text-left" ref={containerReferance}>
+        <div className="relative" ref={containerReferance}>
             <button
                 type="button"
                 aria-haspopup="true"
                 onClick={() => setIsOpen((previous) => !previous)}
-                className="w-6 h-6 rounded-full bg-custom_slate-50  focus:outline-none relative z-1"
+                className="relative z-1 flex justify-center"
             >
-                <div className="flex flex-col items-center justify-center space-y-0.5">
-                    <span className="block w-0.5 h-0.5 bg-gray-400 rounded-full" />
-                    <span className="block w-0.5 h-0.5 bg-gray-400 rounded-full" />
-                    <span className="block w-0.5 h-0.5 bg-gray-400 rounded-full" />
-                </div>
+                <Image src={'todos/ic-menu.svg'} alt="Menu Icon" width={24} height={24} />
             </button>
 
             <div

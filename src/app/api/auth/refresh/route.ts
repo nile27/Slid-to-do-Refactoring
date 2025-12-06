@@ -17,6 +17,12 @@ export const POST = async () => {
     const data = await response.json()
 
     if (!response.ok) {
+        if (response.status === 401) {
+            cookie.delete({name: 'accessToken'})
+            cookie.delete({name: 'refreshToken'})
+            return NextResponse.json({message: 'Refresh token expired'}, {status: 498})
+        }
+
         return NextResponse.json({message: data.message}, {status: response.status})
     }
 

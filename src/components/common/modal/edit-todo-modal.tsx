@@ -1,11 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import {useRef, useState} from 'react'
+import {useCallback, useRef, useState} from 'react'
 
 import {useQueryClient} from '@tanstack/react-query'
 import axios from 'axios'
 import clsx from 'clsx'
+import {useDropzone} from 'react-dropzone'
 
 import ButtonStyle from '@/components/style/button-style'
 import InputStyle from '@/components/style/input-style'
@@ -13,7 +14,7 @@ import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import {useCustomQuery} from '@/hooks/use-custom-query'
 import useToast from '@/hooks/use-toast'
 import {patch} from '@/lib/common-api'
-import {goalListApi} from '@/lib/goals/api'
+import {todos, goals as goalList} from '@/lib/query-keys'
 import {useModalStore} from '@/store/use-modal-store'
 
 import LoadingSpinner from '../loading-spinner'
@@ -41,18 +42,35 @@ const EditTodoModal = ({todoDetail}: {todoDetail: TodoResponse}) => {
 
     const {showToast} = useToast()
 
-    const {data: goals, isLoading: isLoadingGoals} = useCustomQuery<GoalsListResponse>(['goals'], goalListApi, {
-        errorDisplayType: 'toast',
-        mapErrorMessage: (error) => {
-            const typedError = error as {message?: string; response?: {data?: {message?: string}}}
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        if (acceptedFiles.length > 0) {
+            setFile(acceptedFiles[0])
+        }
+    }, [])
 
-            if (axios.isAxiosError(error)) {
-                return error.response?.data.message || '서버 오류가 발생했습니다.'
-            }
-
-            return typedError.message || '알 수 없는 오류가 발생했습니다.'
+    const {getRootProps, getInputProps} = useDropzone({
+        accept: {
+            'image/*': ['.jpeg', '.jpg', '.png'],
         },
+        onDrop,
     })
+
+    const {data: goals, isLoading: isLoadingGoals} = useCustomQuery<GoalsListResponse>(
+        goalList.list().queryKey,
+        goalList.list().queryFn,
+        {
+            errorDisplayType: 'toast',
+            mapErrorMessage: (error) => {
+                const typedError = error as {message?: string; response?: {data?: {message?: string}}}
+
+                if (axios.isAxiosError(error)) {
+                    return error.response?.data.message || '서버 오류가 발생했습니다.'
+                }
+
+                return typedError.message || '알 수 없는 오류가 발생했습니다.'
+            },
+        },
+    )
 
     const uploadFileMutation = useCustomMutation<string>(
         async () => {
@@ -121,9 +139,7 @@ const EditTodoModal = ({todoDetail}: {todoDetail: TodoResponse}) => {
             },
             onSuccess: () => {
                 showToast('할 일 수정이 완료되었습니다.')
-                queryClient.invalidateQueries({queryKey: ['todos']})
-                queryClient.invalidateQueries({queryKey: ['todo', 'done', todoDetail.goal.id]})
-                queryClient.invalidateQueries({queryKey: ['todo', 'notDone', todoDetail.goal.id]})
+                queryClient.invalidateQueries({queryKey: todos.all()})
                 clearModal()
             },
         },
@@ -267,7 +283,7 @@ const EditTodoModal = ({todoDetail}: {todoDetail: TodoResponse}) => {
                     {(isCheckedFile || inputs.fileUrl) && (
                         <div
                             tabIndex={0}
-                            className="flex flex-col items-center justify-center gap-2 py-16 bg-custom_slate-50 rounded-xl"
+                            className="flex flex-col items-center justify-center gap-2 py-4 bg-custom_slate-50 rounded-xl"
                             onClick={() => {
                                 fileInputReference.current?.click()
                             }}
@@ -276,6 +292,7 @@ const EditTodoModal = ({todoDetail}: {todoDetail: TodoResponse}) => {
                                     fileInputReference.current?.click()
                                 }
                             }}
+                            {...getRootProps()}
                         >
                             {file || inputs.fileUrl ? (
                                 <Image src="/todos/ic-uploaded.svg" alt="Uploaded Icon" width={24} height={24} />
@@ -293,7 +310,13 @@ const EditTodoModal = ({todoDetail}: {todoDetail: TodoResponse}) => {
                                 </div>
                             )}
 
-                            <input type="file" hidden ref={fileInputReference} onChange={handleFileChange} />
+                            <input
+                                type="file"
+                                hidden
+                                ref={fileInputReference}
+                                onChange={handleFileChange}
+                                {...getInputProps()}
+                            />
                         </div>
                     )}
                 </div>

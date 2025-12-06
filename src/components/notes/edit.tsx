@@ -6,15 +6,15 @@ import React, {useEffect, useRef, useState} from 'react'
 
 import {useQueryClient} from '@tanstack/react-query'
 
+import MarkdownEditor from '@/components/editor/markdown-editor'
 import {useCustomMutation} from '@/hooks/use-custom-mutation'
 import {useCustomQuery} from '@/hooks/use-custom-query'
 import {useIsNoteChanged} from '@/hooks/use-is-note-changed'
 import useToast from '@/hooks/use-toast'
-import {noteDetailApi, noteEditApi} from '@/lib/notes/api'
+import {notes} from '@/lib/query-keys'
 import {type NoteItemResponse} from '@/types/notes'
 
 import LoadingSpinner from '../common/loading-spinner'
-import MarkdownEditor from '../markdown-editor/markdown-editor'
 import ButtonStyle from '../style/button-style'
 
 import type {ApiError} from '@/types/api'
@@ -27,17 +27,22 @@ const NoteEditCompo = ({noteId}: {noteId: string}) => {
     const [content, setContent] = useState('')
 
     const {showToast} = useToast()
+
     const router = useRouter()
 
     /** 노트 단일 조회 통신 */
-    const {data} = useCustomQuery<NoteItemResponse>(['noteDetail', noteId], () => noteDetailApi(Number(noteId)), {
-        enabled: !!noteId,
-        errorDisplayType: 'toast',
-        mapErrorMessage: (error) => {
-            const apiError = error as ApiError
-            return apiError.message || '노트 정보를 불러오는 데 실패했습니다.'
+    const {data} = useCustomQuery<NoteItemResponse>(
+        notes.detail(Number(noteId)).queryKey,
+        notes.detail(Number(noteId)).queryFn,
+        {
+            enabled: !!noteId,
+            errorDisplayType: 'toast',
+            mapErrorMessage: (error) => {
+                const apiError = error as ApiError
+                return apiError.message || '노트 정보를 불러오는 데 실패했습니다.'
+            },
         },
-    })
+    )
 
     const [linkUrl, setLinkUrl] = useState<string | undefined>(data?.linkUrl)
 
@@ -86,9 +91,7 @@ const NoteEditCompo = ({noteId}: {noteId: string}) => {
 
     /** 노트 수정 통신*/
     const {mutate: editNote} = useCustomMutation<NoteItemResponse, Error, void>(
-        async () => {
-            return await noteEditApi(Number(noteId), payload)
-        },
+        notes.EditNotes(Number(noteId), payload).queryFn,
         {
             errorDisplayType: 'toast',
             mapErrorMessage: (error: Error) => {
@@ -97,10 +100,10 @@ const NoteEditCompo = ({noteId}: {noteId: string}) => {
                 if (apiError.message) return error.message
                 return '노트를 수정하는 데 실패했습니다.'
             },
-            onSuccess: (successData) => {
+            onSuccess: () => {
                 showToast('수정이 완료되었습니다!')
-                router.push(`/notes?goalId=${successData.goal.id}`)
-                queryClient.invalidateQueries({queryKey: ['noteDetail', noteId]})
+                router.push(`/notes`)
+                queryClient.invalidateQueries({queryKey: notes.detail(Number(noteId)).queryKey})
             },
         },
     )
@@ -171,7 +174,9 @@ const NoteEditCompo = ({noteId}: {noteId: string}) => {
                     </div>
                 </div>
             ) : (
-                <LoadingSpinner />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <LoadingSpinner />
+                </div>
             )}
         </>
     )

@@ -12,7 +12,7 @@ const layout = ({
     children: React.ReactNode
 }>) => {
     return (
-        <main className="flex  w-screen h-screen  mobile:flex-col  bg-custom_slate-100    ">
+        <main className="flex  w-screen h-screen   mobile:flex-col  bg-custom_slate-100    ">
             <Sidebar />
             {children}
         </main>

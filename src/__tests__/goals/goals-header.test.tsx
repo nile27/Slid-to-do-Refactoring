@@ -99,7 +99,7 @@ describe('goalHeader 화면', () => {
     it('goalEdit가 true 일 때 input이 보여야한다.', async () => {
         renderWithClient(<GoalHeader {...headerProperties({goalEdit: true})} />)
 
-        const placeholder = await screen.findByPlaceholderText('할 일의 제목을 적어주세요')
+        const placeholder = await screen.findByPlaceholderText('목표를 입력해주세요')
         expect(placeholder).toBeInTheDocument()
     })
     it('goalEdit가 true 일 때 수정버튼이 보여야한다.', async () => {
@@ -160,13 +160,13 @@ describe('버튼 클릭 이벤트', () => {
 
         renderWithClient(<GoalHeaderTestWrapper />)
 
-        const input = await screen.findByPlaceholderText('할 일의 제목을 적어주세요')
+        const input = await screen.findByPlaceholderText('목표를 입력해주세요')
         expect(input).toBeInTheDocument()
 
         await user.click(await screen.findByRole('button', {name: '취소'}))
 
         await waitFor(() => {
-            expect(screen.queryByPlaceholderText('할 일의 제목을 적어주세요')).not.toBeInTheDocument()
+            expect(screen.queryByPlaceholderText('목표를 입력해주세요')).not.toBeInTheDocument()
             expect(screen.getByText('아바타 사진찍기!!')).toBeInTheDocument()
         })
     })

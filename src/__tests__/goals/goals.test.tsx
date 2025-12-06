@@ -31,6 +31,9 @@ const mockedGet = api.get as jest.MockedFunction<typeof api.get>
 beforeEach(() => {
     mockShowToast = jest.fn()
     ;(nextNavigation.useParams as jest.Mock).mockReturnValue({goalId: String(mockGoal.id)})
+    ;(nextNavigation.useRouter as jest.Mock).mockReturnValue({
+        push: jest.fn(), // ✅ push 추가
+    })
     ;(useToast as jest.Mock).mockReturnValue({
         showToast: mockShowToast,
     })

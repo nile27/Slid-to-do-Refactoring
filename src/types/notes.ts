@@ -34,3 +34,10 @@ export interface NoteDataProperty {
     content: string
     linkUrl?: string
 }
+
+export interface NoteInsertProperty {
+    todoId: number
+    title: string
+    content: string
+    linkUrl?: string
+}
