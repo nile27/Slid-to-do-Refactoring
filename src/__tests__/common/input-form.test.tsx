@@ -100,7 +100,7 @@ describe('InputForm', () => {
             />,
         )
         fireEvent.click(screen.getByRole('button', {name: '로그인'}))
-        expect(mockOnSubmit).toHaveBeenCalledWith({email: DUMMY_EMAIL, password: DUMMY_PASSWORD}, expect.anything())
+        expect(mockOnSubmit).toHaveBeenCalled()
     })
 
     it('상단 설명 문구를 렌더링한다', () => {

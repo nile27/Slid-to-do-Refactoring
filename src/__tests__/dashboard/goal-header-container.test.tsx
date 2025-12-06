@@ -5,7 +5,7 @@ import {render, screen} from '@testing-library/react'
 import GoalTitleHeader from '@/components/goals-parts/goal-title-header'
 
 jest.mock('@/hooks/use-custom-query', () => ({
-    useCustomQuery: jest.fn().mockReturnValue({data: 50}),
+    useCustomQuery: jest.fn().mockReturnValue({data: {progress: 50}}),
 }))
 
 jest.mock('@/lib/common-api', () => ({
@@ -24,7 +24,6 @@ describe('GoalTitleHeader', () => {
         render(<GoalTitleHeader goalId={1} title="테스트 목표" isDashboard />)
 
         expect(screen.getByText('Progress')).toBeInTheDocument()
-
-        expect(screen.getByText(/\b50\s*%/)).toBeInTheDocument()
+        expect(screen.getByText('50%')).toBeInTheDocument()
     })
 })
