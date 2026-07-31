@@ -8,7 +8,17 @@ export const middleware = (request: NextRequest) => {
     const refreshToken = request.cookies.get('refreshToken')?.value
     //  루트 경로 처리 추가
 
+    // eslint-disable-next-line no-console
+    console.log('[middleware]', {
+        pathname,
+        hasAccessToken: Boolean(accessToken),
+        hasRefreshToken: Boolean(refreshToken),
+        cookieNames: request.cookies.getAll().map((cookie) => cookie.name),
+    })
+
     if (pathname === '/') {
+        // eslint-disable-next-line no-console
+        console.log('[middleware] / redirect ->', accessToken && refreshToken ? '/dashboard' : '/login')
         return NextResponse.redirect(new URL(accessToken && refreshToken ? '/dashboard' : '/login', request.url))
     }
     //  로그인된 사용자가 /login 또는 /signup으로 접근하면 /dashboard로 리디렉션
@@ -24,6 +34,8 @@ export const middleware = (request: NextRequest) => {
         !pathname.endsWith('.svg') &&
         !pathname.endsWith('.ico')
     if (isProtectedPath && (!accessToken || !refreshToken)) {
+        // eslint-disable-next-line no-console
+        console.log('[middleware] protected path redirect ->', '/login')
         return NextResponse.redirect(new URL('/login', request.url))
     }
     return NextResponse.next()

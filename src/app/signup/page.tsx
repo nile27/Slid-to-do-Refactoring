@@ -38,7 +38,7 @@ const SignPage = () => {
         },
         onSuccess: () => {
             showToast('회원가입이 완료되었습니다!', {type: 'success'})
-            router.push('/')
+            router.push('/login')
         },
     })
 
